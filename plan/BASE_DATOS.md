@@ -1,259 +1,158 @@
-# Historias de Usuario  
+# Diseño de Base de Datos  
 ## Software Educativo Tipo Jeopardy (Juego Presencial por Equipos)
 
 ---
 
 ## 1. Introducción
 
-Este documento describe las **historias de usuario** del proyecto *Software Educativo Tipo Jeopardy*, diseñado para su uso presencial en entornos educativos.  
-El sistema se basa en un **moderador** que controla el flujo del juego y **equipos de estudiantes** que participan de manera colaborativa.
+Este documento describe el **modelo de base de datos** para el sistema *Software Educativo Tipo Jeopardy*.  
+El diseño está orientado a:
+
+- Uso presencial en aula
+- Control total por parte del moderador
+- Juego por equipos
+- Escalabilidad futura
+
+El modelo es compatible con **MySQL o PostgreSQL** y sigue buenas prácticas para su implementación en **Laravel**.
 
 ---
 
 ## 2. Convenciones
 
-- HU: Historia de Usuario  
-- Cada historia incluye:
-  - Descripción
-  - Propósito
-  - Criterios de aceptación
+- PK: Clave primaria
+- FK: Clave foránea
+- Todos los campos `id` son autoincrementales
+- Se utilizan marcas de tiempo (`created_at`, `updated_at`)
 
 ---
 
-## 3. Épica 1: Configuración del Sistema
-
-### HU-01 – Inicializar el proyecto
-**Como** desarrollador  
-**Quiero** configurar Laravel y Vue  
-**Para** contar con una base estable del sistema
-
-**Criterios de aceptación**
-- Backend en Laravel funcional
-- Frontend en Vue operativo
-- Comunicación API correcta
-- Repositorio versionado
+## 3. Tablas Principales
 
 ---
 
-### HU-02 – Autenticación del moderador
-**Como** moderador  
-**Quiero** iniciar sesión en el sistema  
-**Para** acceder al panel de control
+## 3.1 users
+Almacena los usuarios del sistema (solo moderadores en la versión 1).
 
-**Criterios de aceptación**
-- Inicio de sesión seguro
-- Acceso restringido al moderador
-- Sesión persistente
-
----
-
-## 4. Épica 2: Gestión de Contenido
-
-### HU-03 – Crear categorías
-**Como** moderador  
-**Quiero** crear categorías  
-**Para** organizar las preguntas del juego
-
-**Criterios de aceptación**
-- Crear, editar y eliminar categorías
-- Categorías visibles en el tablero
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador del usuario |
+| name | varchar(255) | Nombre del moderador |
+| email | varchar(255) | Correo electrónico |
+| password | varchar(255) | Contraseña encriptada |
+| role | varchar(50) | Rol del usuario (moderador) |
+| created_at | timestamp | Fecha de creación |
+| updated_at | timestamp | Fecha de actualización |
 
 ---
 
-### HU-04 – Crear preguntas
-**Como** moderador  
-**Quiero** registrar preguntas por categoría  
-**Para** utilizarlas durante el juego
+## 3.2 categories
+Define las categorías del tablero Jeopardy.
 
-**Criterios de aceptación**
-- Pregunta con texto
-- Respuesta correcta asociada
-- Puntaje asignado
-- Tiempo máximo configurable
-- Asociación a una categoría
-
----
-
-### HU-05 – Editar y eliminar preguntas
-**Como** moderador  
-**Quiero** modificar preguntas existentes  
-**Para** corregir o actualizar contenido
-
-**Criterios de aceptación**
-- Edición de cualquier campo
-- Eliminación de preguntas no usadas
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador de la categoría |
+| name | varchar(255) | Nombre de la categoría |
+| description | text | Descripción opcional |
+| created_at | timestamp | Fecha de creación |
+| updated_at | timestamp | Fecha de actualización |
 
 ---
 
-## 5. Épica 3: Gestión de Partidas
+## 3.3 questions
+Almacena las preguntas del juego.
 
-### HU-06 – Crear partida
-**Como** moderador  
-**Quiero** crear una nueva partida  
-**Para** iniciar un juego
-
-**Criterios de aceptación**
-- Partida creada en estado “preparación”
-- Configuración previa sin iniciar el juego
-
----
-
-### HU-07 – Registrar equipos
-**Como** moderador  
-**Quiero** registrar equipos  
-**Para** organizar la participación de los estudiantes
-
-**Criterios de aceptación**
-- Nombre del equipo
-- Color identificador
-- Puntaje inicial en cero
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador de la pregunta |
+| category_id | bigint (FK) | Categoría asociada |
+| question_text | text | Texto de la pregunta |
+| correct_answer | text | Respuesta correcta |
+| points | int | Puntaje de la pregunta |
+| time_limit | int | Tiempo máximo (segundos) |
+| is_used | boolean | Indica si ya fue utilizada |
+| created_at | timestamp | Fecha de creación |
+| updated_at | timestamp | Fecha de actualización |
 
 ---
 
-### HU-08 – Iniciar partida
-**Como** moderador  
-**Quiero** iniciar la partida  
-**Para** comenzar el juego
+## 3.4 games
+Representa una partida de Jeopardy.
 
-**Criterios de aceptación**
-- Visualización del tablero
-- Asignación del primer turno
-
----
-
-## 6. Épica 4: Tablero Tipo Jeopardy
-
-### HU-09 – Visualizar tablero
-**Como** moderador  
-**Quiero** ver el tablero con categorías y puntajes  
-**Para** seleccionar preguntas
-
-**Criterios de aceptación**
-- Tablero dinámico
-- Diferenciación entre preguntas disponibles y usadas
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador de la partida |
+| user_id | bigint (FK) | Moderador creador |
+| status | varchar(50) | Estado (preparación, en_curso, finalizada) |
+| current_turn_team_id | bigint (FK) | Equipo en turno |
+| started_at | timestamp | Inicio de la partida |
+| ended_at | timestamp | Fin de la partida |
+| created_at | timestamp | Fecha de creación |
+| updated_at | timestamp | Fecha de actualización |
 
 ---
 
-### HU-10 – Seleccionar pregunta
-**Como** moderador  
-**Quiero** seleccionar una pregunta  
-**Para** mostrarla al equipo en turno
+## 3.5 teams
+Define los equipos participantes en una partida.
 
-**Criterios de aceptación**
-- Pregunta visible en pantalla
-- Activación automática del temporizador
-
----
-
-### HU-11 – Bloquear pregunta usada
-**Como** sistema  
-**Quiero** bloquear preguntas respondidas  
-**Para** evitar su reutilización
-
-**Criterios de aceptación**
-- Estado “usada”
-- No seleccionable nuevamente
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador del equipo |
+| game_id | bigint (FK) | Partida asociada |
+| name | varchar(255) | Nombre del equipo |
+| color | varchar(50) | Color identificador |
+| score | int | Puntaje acumulado |
+| created_at | timestamp | Fecha de creación |
+| updated_at | timestamp | Fecha de actualización |
 
 ---
 
-## 7. Épica 5: Lógica del Juego
+## 3.6 turns
+Registra el control de turnos del juego.
 
-### HU-12 – Controlar turnos
-**Como** moderador  
-**Quiero** controlar el turno de los equipos  
-**Para** mantener el orden del juego
-
-**Criterios de aceptación**
-- Visualización del equipo en turno
-- Cambio manual de turno
-
----
-
-### HU-13 – Temporizador de pregunta
-**Como** moderador  
-**Quiero** un temporizador visible  
-**Para** limitar el tiempo de respuesta
-
-**Criterios de aceptación**
-- Cuenta regresiva visible
-- Pausa y extensión manual
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador del turno |
+| game_id | bigint (FK) | Partida asociada |
+| team_id | bigint (FK) | Equipo en turno |
+| question_id | bigint (FK) | Pregunta seleccionada |
+| is_correct | boolean | Resultado de la respuesta |
+| points_awarded | int | Puntos asignados |
+| created_at | timestamp | Fecha del turno |
 
 ---
 
-### HU-14 – Validar respuesta
-**Como** moderador  
-**Quiero** validar respuestas  
-**Para** asignar puntos correctamente
+## 3.7 game_questions
+Relaciona preguntas con partidas (control de uso por partida).
 
-**Criterios de aceptación**
-- Opción de respuesta correcta o incorrecta
-- Registro de la acción
-
----
-
-### HU-15 – Asignar puntaje
-**Como** sistema  
-**Quiero** actualizar el puntaje del equipo  
-**Para** reflejar el resultado de la respuesta
-
-**Criterios de aceptación**
-- Puntajes actualizados en tiempo real
-- Consistencia en los valores
+| Campo | Tipo | Descripción |
+|-----|----|-------------|
+| id | bigint (PK) | Identificador |
+| game_id | bigint (FK) | Partida |
+| question_id | bigint (FK) | Pregunta |
+| used | boolean | Indicador de uso |
+| created_at | timestamp | Fecha de creación |
 
 ---
 
-## 8. Épica 6: Visualización y Resultados
+## 4. Relaciones Entre Tablas
 
-### HU-16 – Mostrar puntajes
-**Como** moderador  
-**Quiero** visualizar los puntajes  
-**Para** motivar a los equipos
-
-**Criterios de aceptación**
-- Puntajes visibles
-- Identificación visual por equipo
-
----
-
-### HU-17 – Finalizar partida
-**Como** moderador  
-**Quiero** finalizar la partida  
-**Para** cerrar el juego correctamente
-
-**Criterios de aceptación**
-- Estado de partida “finalizada”
-- Visualización del equipo ganador
+- users **1 ─── N** games
+- games **1 ─── N** teams
+- categories **1 ─── N** questions
+- games **1 ─── N** turns
+- teams **1 ─── N** turns
+- questions **1 ─── N** turns
+- games **N ─── N** questions (game_questions)
 
 ---
 
-## 9. Épica 7: Calidad y Estabilidad
+## 5. Reglas de Integridad
 
-### HU-18 – Manejo de errores
-**Como** moderador  
-**Quiero** mensajes claros ante errores  
-**Para** no interrumpir la dinámica de clase
-
-**Criterios de aceptación**
-- Mensajes comprensibles
-- Recuperación del estado del juego
+- Un equipo pertenece a una sola partida
+- Una pregunta solo puede usarse una vez por partida
+- El puntaje del equipo se actualiza desde los turnos
+- Solo el moderador puede modificar partidas y resultados
 
 ---
 
-### HU-19 – Pruebas en aula
-**Como** docente  
-**Quiero** probar el sistema en el aula  
-**Para** validar su funcionamiento real
 
-**Criterios de aceptación**
-- Funciona correctamente en proyector
-- Sin fallos críticos durante la sesión
-
----
-
-## 10. Cierre
-
-Estas historias de usuario constituyen el **backlog inicial del proyecto**, listo para ser estimado, priorizado y asignado a sprints bajo una metodología ágil.
-
-El documento puede usarse tanto para **desarrollo real** como para **proyectos académicos** en asignaturas de ingeniería de software.
-
----
