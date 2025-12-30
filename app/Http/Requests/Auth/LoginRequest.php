@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -21,7 +22,7 @@ class LoginRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -56,7 +57,7 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function ensureIsNotRateLimited(): void
+    public function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
@@ -75,10 +76,10 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the rate limiting throttle key for this request.
+     * Get the rate limiting throttle key for the request.
      */
-    protected function throttleKey(): string
+    public function throttleKey(): string
     {
-        return strtolower($this->input('email')).'|'.$this->ip();
+        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
     }
 }
