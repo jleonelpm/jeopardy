@@ -55,13 +55,13 @@
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                             Nombre Completo
                         </label>
-                        <input 
-                            type="text" 
-                            id="name" 
-                            name="name" 
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
                             value="{{ old('name') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('name') border-red-500 @enderror"
-                            required 
+                            required
                             autofocus
                         />
                         @error('name')
@@ -74,13 +74,13 @@
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                             Correo Electrónico
                         </label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
                             value="{{ old('email') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('email') border-red-500 @enderror"
-                            required 
+                            required
                         />
                         @error('email')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -92,12 +92,12 @@
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                             Contraseña
                         </label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('password') border-red-500 @enderror"
-                            required 
+                            required
                         />
                         <p class="mt-1 text-xs text-gray-500">
                             Mínimo 8 caracteres, incluir mayúscula, minúscula y número
@@ -112,17 +112,17 @@
                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
                             Confirmar Contraseña
                         </label>
-                        <input 
-                            type="password" 
-                            id="password_confirmation" 
-                            name="password_confirmation" 
+                        <input
+                            type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            required 
+                            required
                         />
                     </div>
 
                     <!-- Botón enviar -->
-                    <button 
+                    <button
                         type="submit"
                         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mt-6"
                     >
@@ -133,7 +133,7 @@
                 <!-- Login -->
                 <div class="mt-6 text-center">
                     <p class="text-gray-600">
-                        ¿Ya tienes cuenta? 
+                        ¿Ya tienes cuenta?
                         <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-700 font-semibold">
                             Iniciar Sesión
                         </a>

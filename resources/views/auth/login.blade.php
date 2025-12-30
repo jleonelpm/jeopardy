@@ -55,13 +55,13 @@
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                             Correo Electrónico
                         </label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
                             value="{{ old('email') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('email') border-red-500 @enderror"
-                            required 
+                            required
                             autofocus
                         />
                         @error('email')
@@ -74,12 +74,12 @@
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                             Contraseña
                         </label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('password') border-red-500 @enderror"
-                            required 
+                            required
                         />
                         @error('password')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -88,9 +88,9 @@
 
                     <!-- Recordarme -->
                     <div class="flex items-center">
-                        <input 
-                            type="checkbox" 
-                            id="remember" 
+                        <input
+                            type="checkbox"
+                            id="remember"
                             name="remember"
                             class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                         />
@@ -100,7 +100,7 @@
                     </div>
 
                     <!-- Botón enviar -->
-                    <button 
+                    <button
                         type="submit"
                         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
                     >
@@ -111,7 +111,7 @@
                 <!-- Registro -->
                 <div class="mt-6 text-center">
                     <p class="text-gray-600">
-                        ¿No tienes cuenta? 
+                        ¿No tienes cuenta?
                         <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-700 font-semibold">
                             Registrarse
                         </a>

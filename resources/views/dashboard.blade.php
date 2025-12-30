@@ -17,7 +17,7 @@
                     <span class="text-gray-700">Bienvenido, <strong>{{ auth()->user()->name }}</strong></span>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
-                        <button 
+                        <button
                             type="submit"
                             class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
                         >
