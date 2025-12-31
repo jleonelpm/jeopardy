@@ -104,24 +104,45 @@
             <!-- Acciones -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center gap-4">
                         <a href="{{ route('games.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                             Volver a Partidas
                         </a>
 
-                        @if ($game->status === 'preparacion')
-                            <form action="{{ route('games.start', $game) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                    @if($game->teams->count() < 2) disabled title="Se requieren al menos 2 equipos" @endif>
-                                    Iniciar Partida
-                                </button>
-                            </form>
-                        @elseif ($game->status === 'en_curso')
-                            <a href="{{ route('games.board', $game) }}" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                                Ver Tablero
-                            </a>
-                        @endif
+                        <div class="flex gap-2">
+                            @if ($game->status === 'preparacion')
+                                <form action="{{ route('games.start', $game) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                        @if($game->teams->count() < 2) disabled title="Se requieren al menos 2 equipos" @endif>
+                                        Iniciar Partida
+                                    </button>
+                                </form>
+                            @elseif ($game->status === 'en_curso')
+                                <a href="{{ route('games.preview', $game) }}" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                                    Vista Previa
+                                </a>
+
+                                @if (!$game->is_published)
+                                    <form action="{{ route('games.publish', $game) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                            Publicar Partida
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('games.unpublish', $game) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                                            Despublicar
+                                        </button>
+                                    </form>
+                                    <span class="px-3 py-2 text-sm font-semibold rounded bg-green-100 text-green-800">
+                                        ✓ Publicada
+                                    </span>
+                                @endif
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
