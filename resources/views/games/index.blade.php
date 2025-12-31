@@ -36,6 +36,9 @@
                                     Estado
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Publicación
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Equipos
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -68,6 +71,17 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($game->is_published)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                ✓ Publicada
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                No publicada
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
                                         {{ $game->teams->count() }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -78,8 +92,13 @@
                                             Ver
                                         </a>
                                         @if ($game->status === 'en_curso')
-                                            <a href="{{ route('games.board', $game) }}" class="text-green-600 hover:text-green-900 mr-3">
-                                                Tablero
+                                            <a href="{{ route('games.preview', $game) }}" class="text-purple-600 hover:text-purple-900 mr-3">
+                                                Preview
+                                            </a>
+                                        @endif
+                                        @if ($game->is_published)
+                                            <a href="{{ route('play.game', $game) }}" target="_blank" class="text-green-600 hover:text-green-900 mr-3">
+                                                Jugar
                                             </a>
                                         @endif
                                         @if ($game->status !== 'en_curso')
@@ -95,7 +114,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
                                         No hay partidas registradas
                                     </td>
                                 </tr>

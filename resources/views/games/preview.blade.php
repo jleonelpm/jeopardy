@@ -2,11 +2,18 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Tablero - Partida #') }}{{ $game->id }}
+                {{ __('Vista Previa del Tablero - Partida #') }}{{ $game->id }}
             </h2>
-            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                En Curso
-            </span>
+            <div class="flex gap-2 items-center">
+                @if ($game->is_published)
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                        ✓ Publicada
+                    </span>
+                @endif
+                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                    Solo Vista Previa
+                </span>
+            </div>
         </div>
     </x-slot>
 
@@ -23,6 +30,12 @@
                     {{ session('error') }}
                 </div>
             @endif
+
+            <!-- Nota informativa -->
+            <div class="mb-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded">
+                <p class="font-semibold">💡 Vista Previa del Backend</p>
+                <p class="text-sm">Esta es una vista previa para verificar la configuración. Para jugar, publica la partida y accede desde el frontend.</p>
+            </div>
 
             <!-- Turno actual -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">

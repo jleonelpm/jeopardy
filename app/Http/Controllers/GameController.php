@@ -114,20 +114,15 @@ class GameController extends Controller
             ]);
         });
 
-        return redirect()->route('games.board', $game)
+        return redirect()->route('games.preview', $game)
             ->with('success', 'Partida iniciada exitosamente.');
     }
 
     /**
-     * Show the game board.
+     * HU-05: Vista previa del tablero (solo visualización)
      */
-    public function board(Game $game)
+    public function preview(Game $game)
     {
-        if ($game->status !== 'en_curso') {
-            return redirect()->route('games.show', $game)
-                ->with('error', 'La partida debe estar en curso para ver el tablero.');
-        }
-
         $game->load(['teams', 'currentTurnTeam', 'gameQuestions.question.category']);
 
         // Agrupar preguntas por categoría
@@ -142,7 +137,35 @@ class GameController extends Controller
                 ];
             });
 
-        return view('games.board', compact('game', 'categories'));
+        return view('games.preview', compact('game', 'categories'));
+    }
+
+    /**
+     * HU-06: Publicar partida para permitir juego desde frontend
+     */
+    public function publish(Game $game)
+    {
+        if ($game->status !== 'en_curso') {
+            return back()->with('error', 'Solo se pueden publicar partidas en curso.');
+        }
+
+        if ($game->gameQuestions()->count() === 0) {
+            return back()->with('error', 'La partida debe tener preguntas asignadas antes de publicarse.');
+        }
+
+        $game->update(['is_published' => true]);
+
+        return back()->with('success', 'Partida publicada exitosamente. Ahora es accesible desde el frontend.');
+    }
+
+    /**
+     * HU-06: Despublicar partida
+     */
+    public function unpublish(Game $game)
+    {
+        $game->update(['is_published' => false]);
+
+        return back()->with('success', 'Partida despublicada exitosamente.');
     }
 
     /**

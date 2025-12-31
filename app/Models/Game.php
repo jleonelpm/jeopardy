@@ -15,6 +15,7 @@ class Game extends Model
     protected $fillable = [
         'user_id',
         'status',
+        'is_published',
         'current_turn_team_id',
         'started_at',
         'ended_at',
@@ -23,6 +24,7 @@ class Game extends Model
     protected $casts = [
         'started_at' => 'datetime',
         'ended_at' => 'datetime',
+        'is_published' => 'boolean',
     ];
 
     /**

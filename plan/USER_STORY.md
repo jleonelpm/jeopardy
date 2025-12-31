@@ -1,259 +1,135 @@
 # Historias de Usuario  
-## Software Educativo Tipo Jeopardy (Juego Presencial por Equipos)
+## Software Educativo Tipo Jeopardy
 
 ---
 
-## 1. Introducción
+## ÉPICA 1: Backend – Gestión Administrativa
 
-Este documento describe las **historias de usuario** del proyecto *Software Educativo Tipo Jeopardy*, diseñado para su uso presencial en entornos educativos.  
-El sistema se basa en un **moderador** que controla el flujo del juego y **equipos de estudiantes** que participan de manera colaborativa.
-
----
-
-## 2. Convenciones
-
-- HU: Historia de Usuario  
-- Cada historia incluye:
-  - Descripción
-  - Propósito
-  - Criterios de aceptación
+### HU-01 – Gestionar categorías
+Como moderador  
+Quiero crear, editar y eliminar categorías  
+Para organizar las preguntas del juego
 
 ---
 
-## 3. Épica 1: Configuración del Sistema
-
-### HU-01 – Inicializar el proyecto
-**Como** desarrollador  
-**Quiero** configurar Laravel y Vue  
-**Para** contar con una base estable del sistema
-
-**Criterios de aceptación**
-- Backend en Laravel funcional
-- Frontend en Vue operativo
-- Comunicación API correcta
-- Repositorio versionado
+### HU-02 – Gestionar preguntas
+Como moderador  
+Quiero crear preguntas por categoría  
+Para construir el banco de preguntas
 
 ---
 
-### HU-02 – Autenticación del moderador
-**Como** moderador  
-**Quiero** iniciar sesión en el sistema  
-**Para** acceder al panel de control
-
-**Criterios de aceptación**
-- Inicio de sesión seguro
-- Acceso restringido al moderador
-- Sesión persistente
+### HU-03 – Crear partida
+Como moderador  
+Quiero crear una partida  
+Para preparar un juego antes de la clase
 
 ---
 
-## 4. Épica 2: Gestión de Contenido
-
-### HU-03 – Crear categorías
-**Como** moderador  
-**Quiero** crear categorías  
-**Para** organizar las preguntas del juego
-
-**Criterios de aceptación**
-- Crear, editar y eliminar categorías
-- Categorías visibles en el tablero
+### HU-04 – Registrar equipos
+Como moderador  
+Quiero registrar equipos en la partida  
+Para organizar la dinámica del juego
 
 ---
 
-### HU-04 – Crear preguntas
-**Como** moderador  
-**Quiero** registrar preguntas por categoría  
-**Para** utilizarlas durante el juego
-
-**Criterios de aceptación**
-- Pregunta con texto
-- Respuesta correcta asociada
-- Puntaje asignado
-- Tiempo máximo configurable
-- Asociación a una categoría
+### HU-05 – Vista previa del tablero
+Como moderador  
+Quiero visualizar una vista previa del tablero  
+Para verificar que el juego esté correctamente configurado
 
 ---
 
-### HU-05 – Editar y eliminar preguntas
-**Como** moderador  
-**Quiero** modificar preguntas existentes  
-**Para** corregir o actualizar contenido
+### HU-06 – Publicar partida
+Como moderador  
+Quiero publicar una partida  
+Para permitir que se juegue desde el frontend
 
-**Criterios de aceptación**
-- Edición de cualquier campo
-- Eliminación de preguntas no usadas
-
----
-
-## 5. Épica 3: Gestión de Partidas
-
-### HU-06 – Crear partida
-**Como** moderador  
-**Quiero** crear una nueva partida  
-**Para** iniciar un juego
-
-**Criterios de aceptación**
-- Partida creada en estado “preparación”
-- Configuración previa sin iniciar el juego
+**Criterio clave:**  
+Si la partida no está publicada → no se puede jugar
 
 ---
 
-### HU-07 – Registrar equipos
-**Como** moderador  
-**Quiero** registrar equipos  
-**Para** organizar la participación de los estudiantes
+## ÉPICA 2: API – Comunicación
 
-**Criterios de aceptación**
-- Nombre del equipo
-- Color identificador
-- Puntaje inicial en cero
+### HU-07 – Obtener partidas publicadas
+Como sistema  
+Quiero exponer solo partidas publicadas  
+Para evitar accesos indebidos
 
 ---
 
-### HU-08 – Iniciar partida
-**Como** moderador  
-**Quiero** iniciar la partida  
-**Para** comenzar el juego
-
-**Criterios de aceptación**
-- Visualización del tablero
-- Asignación del primer turno
+### HU-08 – Obtener tablero de juego
+Como frontend  
+Quiero obtener categorías y preguntas disponibles  
+Para renderizar el tablero
 
 ---
 
-## 6. Épica 4: Tablero Tipo Jeopardy
-
-### HU-09 – Visualizar tablero
-**Como** moderador  
-**Quiero** ver el tablero con categorías y puntajes  
-**Para** seleccionar preguntas
-
-**Criterios de aceptación**
-- Tablero dinámico
-- Diferenciación entre preguntas disponibles y usadas
+### HU-09 – Actualizar estado de pregunta
+Como sistema  
+Quiero marcar preguntas como usadas  
+Para evitar repeticiones
 
 ---
 
-### HU-10 – Seleccionar pregunta
-**Como** moderador  
-**Quiero** seleccionar una pregunta  
-**Para** mostrarla al equipo en turno
-
-**Criterios de aceptación**
-- Pregunta visible en pantalla
-- Activación automática del temporizador
+### HU-10 – Actualizar puntajes
+Como sistema  
+Quiero actualizar el puntaje de los equipos  
+Para reflejar el resultado del juego
 
 ---
 
-### HU-11 – Bloquear pregunta usada
-**Como** sistema  
-**Quiero** bloquear preguntas respondidas  
-**Para** evitar su reutilización
+## ÉPICA 3: Frontend – Juego en Aula
 
-**Criterios de aceptación**
-- Estado “usada”
-- No seleccionable nuevamente
+### HU-11 – Visualizar tablero Jeopardy
+Como moderador  
+Quiero ver el tablero del juego  
+Para desarrollar la partida en clase
 
 ---
 
-## 7. Épica 5: Lógica del Juego
-
-### HU-12 – Controlar turnos
-**Como** moderador  
-**Quiero** controlar el turno de los equipos  
-**Para** mantener el orden del juego
-
-**Criterios de aceptación**
-- Visualización del equipo en turno
-- Cambio manual de turno
+### HU-12 – Seleccionar pregunta
+Como moderador  
+Quiero seleccionar una pregunta  
+Para iniciar una ronda
 
 ---
 
-### HU-13 – Temporizador de pregunta
-**Como** moderador  
-**Quiero** un temporizador visible  
-**Para** limitar el tiempo de respuesta
-
-**Criterios de aceptación**
-- Cuenta regresiva visible
-- Pausa y extensión manual
+### HU-13 – Temporizador
+Como moderador  
+Quiero un temporizador visible  
+Para controlar el tiempo de respuesta
 
 ---
 
 ### HU-14 – Validar respuesta
-**Como** moderador  
-**Quiero** validar respuestas  
-**Para** asignar puntos correctamente
-
-**Criterios de aceptación**
-- Opción de respuesta correcta o incorrecta
-- Registro de la acción
+Como moderador  
+Quiero validar respuestas  
+Para asignar puntos correctamente
 
 ---
 
-### HU-15 – Asignar puntaje
-**Como** sistema  
-**Quiero** actualizar el puntaje del equipo  
-**Para** reflejar el resultado de la respuesta
-
-**Criterios de aceptación**
-- Puntajes actualizados en tiempo real
-- Consistencia en los valores
+### HU-15 – Mostrar puntajes
+Como usuario  
+Quiero ver los puntajes actualizados  
+Para seguir el desarrollo del juego
 
 ---
 
-## 8. Épica 6: Visualización y Resultados
-
-### HU-16 – Mostrar puntajes
-**Como** moderador  
-**Quiero** visualizar los puntajes  
-**Para** motivar a los equipos
-
-**Criterios de aceptación**
-- Puntajes visibles
-- Identificación visual por equipo
+### HU-16 – Finalizar partida
+Como moderador  
+Quiero finalizar la partida  
+Para cerrar correctamente la actividad
 
 ---
 
-### HU-17 – Finalizar partida
-**Como** moderador  
-**Quiero** finalizar la partida  
-**Para** cerrar el juego correctamente
+## 4. Nota Pedagógica
 
-**Criterios de aceptación**
-- Estado de partida “finalizada”
-- Visualización del equipo ganador
-
----
-
-## 9. Épica 7: Calidad y Estabilidad
-
-### HU-18 – Manejo de errores
-**Como** moderador  
-**Quiero** mensajes claros ante errores  
-**Para** no interrumpir la dinámica de clase
-
-**Criterios de aceptación**
-- Mensajes comprensibles
-- Recuperación del estado del juego
-
----
-
-### HU-19 – Pruebas en aula
-**Como** docente  
-**Quiero** probar el sistema en el aula  
-**Para** validar su funcionamiento real
-
-**Criterios de aceptación**
-- Funciona correctamente en proyector
-- Sin fallos críticos durante la sesión
-
----
-
-## 10. Cierre
-
-Estas historias de usuario constituyen el **backlog inicial del proyecto**, listo para ser estimado, priorizado y asignado a sprints bajo una metodología ágil.
-
-El documento puede usarse tanto para **desarrollo real** como para **proyectos académicos** en asignaturas de ingeniería de software.
+Esta separación permite:
+- Preparación previa rigurosa
+- Uso controlado en aula
+- Claridad para los estudiantes
+- Escalabilidad futura
 
 ---
