@@ -57,12 +57,21 @@ class TurnApiController extends Controller
      */
     public function nextTurn(Game $game, Request $request)
     {
-        $request->validate([
-            'next_team_id' => 'required|exists:teams,id',
-        ]);
+        // Si no se especifica el siguiente equipo, rotar automáticamente
+        if (!$request->has('next_team_id')) {
+            $teams = $game->teams()->orderBy('id')->get();
+            $currentIndex = $teams->search(fn($team) => $team->id === $game->current_turn_team_id);
+            $nextIndex = ($currentIndex + 1) % $teams->count();
+            $nextTeamId = $teams[$nextIndex]->id;
+        } else {
+            $nextTeamId = $request->next_team_id;
+            $request->validate([
+                'next_team_id' => 'required|exists:teams,id',
+            ]);
+        }
 
         $game->update([
-            'current_turn_team_id' => $request->next_team_id
+            'current_turn_team_id' => $nextTeamId
         ]);
 
         return response()->json([

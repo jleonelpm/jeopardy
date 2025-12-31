@@ -17,6 +17,8 @@ class Game extends Model
         'status',
         'is_published',
         'current_turn_team_id',
+        'num_rows',
+        'selected_categories',
         'started_at',
         'ended_at',
     ];
@@ -25,6 +27,7 @@ class Game extends Model
         'started_at' => 'datetime',
         'ended_at' => 'datetime',
         'is_published' => 'boolean',
+        'selected_categories' => 'array',
     ];
 
     /**

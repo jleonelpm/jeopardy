@@ -72,6 +72,13 @@
             @close="closeQuestion"
             @answer="handleAnswer"
         />
+
+        <!-- Modal de ganador -->
+        <GameWinner
+            v-if="gameFinished"
+            :teams="teams"
+            @close="closeWinner"
+        />
     </div>
 </template>
 
@@ -79,12 +86,14 @@
 import { ref, computed, onMounted } from 'vue';
 import ScoreBoard from './ScoreBoard.vue';
 import QuestionModal from './QuestionModal.vue';
+import GameWinner from './GameWinner.vue';
 
 export default {
     name: 'BoardGame',
     components: {
         ScoreBoard,
         QuestionModal,
+        GameWinner,
     },
     props: {
         gameId: {
@@ -98,6 +107,7 @@ export default {
         const teams = ref([]);
         const currentTeam = ref(null);
         const selectedQuestion = ref(null);
+        const gameFinished = ref(false);
 
         const loadGameBoard = async () => {
             try {
@@ -109,6 +119,19 @@ export default {
                     categories.value = data.data.categories;
                     teams.value = data.data.game.teams;
                     currentTeam.value = data.data.game.current_turn_team;
+
+                    // Verificar si todas las preguntas han sido respondidas
+                    const totalQuestions = categories.value.reduce((sum, cat) => sum + cat.questions.length, 0);
+                    const usedQuestions = categories.value.reduce((sum, cat) => {
+                        return sum + cat.questions.filter(q => q.used).length;
+                    }, 0);
+
+                    if (totalQuestions > 0 && usedQuestions === totalQuestions) {
+                        // Finalizar el juego después de un pequeño delay
+                        setTimeout(() => {
+                            gameFinished.value = true;
+                        }, 500);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading game board:', error);
@@ -121,6 +144,10 @@ export default {
 
         const closeQuestion = () => {
             selectedQuestion.value = null;
+        };
+
+        const closeWinner = () => {
+            window.location.href = '/dashboard';
         };
 
         const handleAnswer = async ({ isCorrect, points }) => {
@@ -155,6 +182,14 @@ export default {
                 }),
             });
 
+            // Cambiar automáticamente al siguiente turno (rotación automática)
+            await fetch(`/api/games/${props.gameId}/next-turn`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
             // Recargar tablero
             await loadGameBoard();
             closeQuestion();
@@ -170,8 +205,10 @@ export default {
             teams,
             currentTeam,
             selectedQuestion,
+            gameFinished,
             selectQuestion,
             closeQuestion,
+            closeWinner,
             handleAnswer,
         };
     },

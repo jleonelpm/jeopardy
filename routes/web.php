@@ -31,10 +31,12 @@ Route::middleware('auth')->group(function () {
     // Rutas de recursos para gestión de partidas
     Route::resource('games', GameController::class)->except(['edit', 'update']);
     Route::post('games/{game}/teams', [GameController::class, 'storeTeam'])->name('games.teams.store');
+    Route::delete('games/{game}/teams/{team}', [GameController::class, 'destroyTeam'])->name('games.teams.destroy');
     Route::post('games/{game}/start', [GameController::class, 'start'])->name('games.start');
     Route::get('games/{game}/preview', [GameController::class, 'preview'])->name('games.preview');
     Route::post('games/{game}/publish', [GameController::class, 'publish'])->name('games.publish');
     Route::post('games/{game}/unpublish', [GameController::class, 'unpublish'])->name('games.unpublish');
+    Route::post('games/{game}/restart', [GameController::class, 'restart'])->name('games.restart');
 });
 
 require __DIR__.'/auth.php';

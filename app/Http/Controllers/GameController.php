@@ -31,7 +31,8 @@ class GameController extends Controller
      */
     public function create()
     {
-        return view('games.create');
+        $categories = \App\Models\Category::orderBy('name')->get();
+        return view('games.create', compact('categories'));
     }
 
     /**
@@ -42,6 +43,8 @@ class GameController extends Controller
         $game = Game::create([
             'user_id' => Auth::id(),
             'status' => 'preparacion',
+            'num_rows' => $request->num_rows ?? 5,
+            'selected_categories' => $request->selected_categories ?? [],
             'current_turn_team_id' => null,
             'started_at' => null,
             'ended_at' => null,
@@ -95,15 +98,56 @@ class GameController extends Controller
             return back()->with('error', 'Debes registrar al menos 2 equipos para iniciar la partida.');
         }
 
-        DB::transaction(function () use ($game, $teams) {
-            // Asignar todas las preguntas disponibles a la partida
-            $questions = Question::where('is_used', false)->get();
+        // Validar configuración del tablero
+        $numRows = $game->num_rows ?? 5;
+        $selectedCategories = $game->selected_categories ?? [];
 
-            foreach ($questions as $question) {
+        if (count($selectedCategories) < 2) {
+            return back()->with('error', 'Debes tener al menos 2 categorías configuradas.');
+        }
+
+        $numQuestions = $numRows * count($selectedCategories);
+
+        DB::transaction(function () use ($game, $teams, $selectedCategories, $numRows, $numQuestions) {
+            // Obtener preguntas disponibles de las categorías seleccionadas
+            $availableQuestions = Question::whereIn('category_id', $selectedCategories)
+                ->where('is_used', false)
+                ->get();
+
+            if ($availableQuestions->count() < $numQuestions) {
+                throw new \Exception('No hay suficientes preguntas disponibles en las categorías seleccionadas.');
+            }
+
+            // Agrupar por categoría y seleccionar preguntas aleatoriamente
+            $questionsByCategory = $availableQuestions->groupBy('category_id');
+            $selectedQuestions = collect();
+
+            foreach ($selectedCategories as $categoryId) {
+                $categoryQuestions = $questionsByCategory[$categoryId] ?? collect();
+
+                if ($categoryQuestions->count() < $numRows) {
+                    throw new \Exception("No hay suficientes preguntas en la categoría ID {$categoryId}.");
+                }
+
+                // Seleccionar preguntas aleatorias sin repetir
+                $selected = $categoryQuestions->random($numRows);
+                $selectedQuestions = $selectedQuestions->merge($selected);
+            }
+
+            // Asignar preguntas únicas al tablero
+            $usedQuestionIds = [];
+            foreach ($selectedQuestions as $question) {
+                // Evitar duplicados
+                if (in_array($question->id, $usedQuestionIds)) {
+                    continue;
+                }
+
                 $game->gameQuestions()->create([
                     'question_id' => $question->id,
                     'used' => false,
                 ]);
+
+                $usedQuestionIds[] = $question->id;
             }
 
             // Iniciar partida y asignar primer turno
@@ -125,7 +169,40 @@ class GameController extends Controller
     {
         $game->load(['teams', 'currentTurnTeam', 'gameQuestions.question.category']);
 
-        // Agrupar preguntas por categoría
+        if ($game->status === 'preparacion') {
+            // Modo simulación: Mostrar vista previa con categorías seleccionadas
+            $numRows = $game->num_rows ?? 5;
+            $selectedCategories = $game->selected_categories ?? [];
+
+            // Obtener las categorías seleccionadas con preguntas de ejemplo
+            $categories = \App\Models\Category::whereIn('id', $selectedCategories)
+                ->with(['questions' => function($query) use ($numRows) {
+                    $query->where('is_used', false)->limit($numRows);
+                }])
+                ->get()
+                ->map(function ($category) use ($numRows) {
+                    $questions = $category->questions->take($numRows);
+
+                    // Simular game_questions para mantener compatibilidad con la vista
+                    $simulatedQuestions = $questions->map(function ($question) {
+                        return (object) [
+                            'id' => $question->id,
+                            'question_id' => $question->id,
+                            'used' => false,
+                            'question' => $question,
+                        ];
+                    });
+
+                    return [
+                        'category' => $category,
+                        'questions' => $simulatedQuestions,
+                    ];
+                });
+
+            return view('games.preview', compact('game', 'categories'));
+        }
+
+        // Agrupar preguntas por categoría (modo normal)
         $categories = $game->gameQuestions()
             ->with('question.category')
             ->get()
@@ -166,6 +243,56 @@ class GameController extends Controller
         $game->update(['is_published' => false]);
 
         return back()->with('success', 'Partida despublicada exitosamente.');
+    }
+
+    /**
+     * Reiniciar una partida para jugar nuevamente
+     */
+    public function restart(Game $game)
+    {
+        if ($game->status !== 'en_curso' && $game->status !== 'finalizada') {
+            return back()->with('error', 'Solo se pueden reiniciar partidas en curso o finalizadas.');
+        }
+
+        DB::transaction(function () use ($game) {
+            // Marcar todas las preguntas como no usadas (mantener las preguntas)
+            $game->gameQuestions()->update(['used' => false]);
+
+            // Eliminar todos los equipos
+            $game->teams()->delete();
+
+            // Eliminar todos los turnos registrados
+            \App\Models\Turn::where('game_id', $game->id)->delete();
+
+            // Reiniciar estado de la partida
+            $game->update([
+                'status' => 'preparacion',
+                'is_published' => false,
+                'current_turn_team_id' => null,
+                'started_at' => null,
+                'ended_at' => null,
+            ]);
+        });
+
+        return back()->with('success', 'Partida reiniciada exitosamente. Las preguntas se mantienen, pero debes registrar nuevos equipos.');
+    }
+
+    /**
+     * Remove a team from the game.
+     */
+    public function destroyTeam(Game $game, Team $team)
+    {
+        if ($game->status !== 'preparacion') {
+            return back()->with('error', 'Solo se pueden eliminar equipos durante la preparación.');
+        }
+
+        if ($team->game_id !== $game->id) {
+            return back()->with('error', 'Este equipo no pertenece a esta partida.');
+        }
+
+        $team->delete();
+
+        return back()->with('success', 'Equipo eliminado exitosamente.');
     }
 
     /**
