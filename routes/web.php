@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,12 @@ Route::middleware('auth')->group(function () {
     // Rutas de recursos para gestión de contenido
     Route::resource('categories', CategoryController::class);
     Route::resource('questions', QuestionController::class);
+
+    // Rutas de recursos para gestión de partidas
+    Route::resource('games', GameController::class)->except(['edit', 'update']);
+    Route::post('games/{game}/teams', [GameController::class, 'storeTeam'])->name('games.teams.store');
+    Route::post('games/{game}/start', [GameController::class, 'start'])->name('games.start');
+    Route::get('games/{game}/board', [GameController::class, 'board'])->name('games.board');
 });
 
 require __DIR__.'/auth.php';
