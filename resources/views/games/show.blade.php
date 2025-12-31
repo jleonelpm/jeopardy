@@ -81,9 +81,20 @@
                     @if ($game->teams->count() > 0)
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach ($game->teams as $team)
-                                <div class="border rounded-lg p-4" style="border-color: {{ $team->color }}; border-width: 3px;">
+                                <div class="border rounded-lg p-4 relative" style="border-color: {{ $team->color }}; border-width: 3px;">
+                                    @if ($game->status === 'preparacion')
+                                        <form action="{{ route('games.teams.destroy', [$game, $team]) }}" method="POST" class="absolute top-2 right-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs"
+                                                onclick="return confirm('¿Estás seguro de eliminar el equipo {{ $team->name }}?')">
+                                                ✕
+                                            </button>
+                                        </form>
+                                    @endif
                                     <div class="flex items-center justify-between">
-                                        <div>
+                                        <div class="pr-8">
                                             <h4 class="font-semibold text-lg">{{ $team->name }}</h4>
                                             <p class="text-sm text-gray-600">Color: <span class="font-semibold" style="color: {{ $team->color }}">{{ $team->color }}</span></p>
                                         </div>
@@ -111,6 +122,10 @@
 
                         <div class="flex gap-2">
                             @if ($game->status === 'preparacion')
+                                <a href="{{ route('games.preview', $game) }}" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                                    Vista Previa
+                                </a>
+
                                 <form action="{{ route('games.start', $game) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -141,6 +156,22 @@
                                         ✓ Publicada
                                     </span>
                                 @endif
+
+                                <form action="{{ route('games.restart', $game) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                                        onclick="return confirm('¿Deseas reiniciar esta partida? Se perderán todos los puntajes y preguntas usadas.')">
+                                        Reiniciar Partida
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('games.restart', $game) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                                        onclick="return confirm('¿Deseas reiniciar esta partida? Se perderán todos los puntajes y preguntas usadas.')">
+                                        Reiniciar Partida
+                                    </button>
+                                </form>
                             @endif
                         </div>
                     </div>

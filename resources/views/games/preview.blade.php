@@ -34,9 +34,20 @@
             <!-- Nota informativa -->
             <div class="mb-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded">
                 <p class="font-semibold">💡 Vista Previa del Backend</p>
-                <p class="text-sm">Esta es una vista previa para verificar la configuración. Para jugar, publica la partida y accede desde el frontend.</p>
+                @if ($game->status === 'preparacion')
+                    <p class="text-sm">Esta es una simulación del tablero basada en tu configuración. Las preguntas mostradas son ejemplos de las categorías seleccionadas.</p>
+                    <p class="text-sm mt-1">
+                        <strong>Estado:</strong> Preparación | <strong>Configuración:</strong> {{ $categories->count() }} categorías × {{ $game->num_rows ?? 5 }} filas
+                    </p>
+                @else
+                    <p class="text-sm">Esta es una vista previa para verificar la configuración. Para jugar, publica la partida y accede desde el frontend.</p>
+                    <p class="text-sm mt-1">
+                        <strong>Configuración:</strong> {{ $categories->count() }} categorías × {{ $game->num_rows ?? 5 }} filas
+                    </p>
+                @endif
             </div>
 
+            @if ($game->status !== 'preparacion')
             <!-- Turno actual -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900">
@@ -56,9 +67,10 @@
             </div>
 
             <!-- Puntajes de todos los equipos -->
+            @if ($game->teams->count() > 0)
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-semibold mb-4">Puntajes</h3>
+                    <h3 class="text-lg font-semibold mb-4">Equipos Registrados</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         @foreach ($game->teams->sortByDesc('score') as $team)
                             <div class="border-l-4 pl-4 py-2" style="border-color: {{ $team->color }}">
@@ -69,6 +81,8 @@
                     </div>
                 </div>
             </div>
+            @endif
+            @endif
 
             <!-- Tablero de preguntas -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -88,7 +102,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for ($i = 0; $i < 5; $i++)
+                                    @php
+                                        $numRows = $game->num_rows ?? 5;
+                                    @endphp
+                                    @for ($i = 0; $i < $numRows; $i++)
                                         <tr>
                                             @foreach ($categories as $categoryData)
                                                 @php
