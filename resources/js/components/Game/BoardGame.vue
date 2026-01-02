@@ -1,22 +1,34 @@
 <template>
-    <div class="min-h-screen bg-gray-900 text-white">
+    <div class="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white">
         <!-- Header con información de la partida -->
-        <div class="bg-blue-800 p-4 shadow-lg">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 shadow-2xl border-b-4 border-yellow-400">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <h1 class="text-3xl font-bold">JEOPARDY!</h1>
-                <div class="text-right">
-                    <p class="text-sm">Partida #{{ game.id }}</p>
-                    <p class="text-xs">{{ game.status }}</p>
+                <div class="flex items-center gap-4">
+                    <div class="bg-yellow-400 rounded-full w-16 h-16 flex items-center justify-center shadow-lg transform hover:rotate-12 transition-transform">
+                        <svg class="w-10 h-10 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-5xl font-black tracking-wider text-white drop-shadow-2xl" style="font-family: 'Impact', sans-serif; letter-spacing: 0.1em;">JEOPARDY!</h1>
+                </div>
+                <div class="text-right bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20">
+                    <p class="text-sm font-semibold text-yellow-300">Partida #{{ game.id }}</p>
+                    <p class="text-xs text-blue-200 uppercase tracking-wide">{{ game.status }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Turno actual -->
-        <div class="bg-gray-800 p-6 shadow-inner">
+        <div class="bg-gradient-to-b from-gray-800 to-transparent p-8 shadow-inner">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center">
-                    <p class="text-sm text-gray-400 mb-2">TURNO ACTUAL</p>
-                    <h2 class="text-4xl font-bold" :style="{ color: currentTeam?.color }">
+                <div class="text-center transform hover:scale-105 transition-transform">
+                    <p class="text-sm text-gray-300 mb-3 uppercase tracking-widest font-semibold flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                        TURNO ACTUAL
+                    </p>
+                    <h2 class="text-5xl font-black drop-shadow-lg animate-pulse" :style="{ color: currentTeam?.color, textShadow: `0 0 20px ${currentTeam?.color}` }">
                         {{ currentTeam?.name }}
                     </h2>
                 </div>
@@ -25,12 +37,13 @@
 
         <!-- Tablero de categorías y preguntas -->
         <div class="max-w-7xl mx-auto p-6">
-            <div class="grid gap-2" :style="{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }">
+            <div class="grid gap-3" :style="{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }">
                 <!-- Encabezados de categorías -->
                 <div
                     v-for="category in categories"
                     :key="category.category.id"
-                    class="bg-blue-600 p-4 text-center font-bold text-xl rounded shadow-lg"
+                    class="bg-gradient-to-b from-blue-500 to-blue-700 p-5 text-center font-black text-xl rounded-lg shadow-2xl border-2 border-blue-400 transform hover:-translate-y-1 transition-all uppercase tracking-wide"
+                    style="font-family: 'Arial Black', sans-serif;"
                 >
                     {{ category.category.name }}
                 </div>
@@ -46,15 +59,18 @@
                         <button
                             v-if="!gameQuestion.used"
                             @click="selectQuestion(gameQuestion)"
-                            class="w-full h-full bg-blue-500 hover:bg-blue-400 text-4xl font-bold rounded shadow-lg transition transform hover:scale-105"
+                            class="w-full h-full bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 hover:from-yellow-500 hover:via-yellow-400 hover:to-orange-500 text-5xl font-black rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-110 hover:rotate-2 border-4 border-blue-400 hover:border-yellow-300 active:scale-95 group relative overflow-hidden"
                         >
-                            ${{ gameQuestion.question.points }}
+                            <span class="relative z-10 drop-shadow-lg">${{ gameQuestion.question.points }}</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                         </button>
                         <div
                             v-else
-                            class="w-full h-full bg-gray-700 text-gray-500 flex items-center justify-center text-6xl rounded shadow-inner"
+                            class="w-full h-full bg-gray-800 text-gray-600 flex items-center justify-center text-6xl rounded-xl shadow-inner border-4 border-gray-700"
                         >
-                            —
+                            <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
                         </div>
                     </div>
                 </template>
