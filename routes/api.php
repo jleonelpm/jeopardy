@@ -19,6 +19,9 @@ Route::get('/games/{game}/board', [GameApiController::class, 'board']);
 // HU-09: Actualizar estado de pregunta
 Route::patch('/games/{game}/questions/{question}/mark-used', [GameApiController::class, 'markQuestionUsed']);
 
+// Finalizar partida
+Route::patch('/games/{game}/finish', [GameApiController::class, 'finish']);
+
 // HU-10: Actualizar puntajes
 Route::patch('/teams/{team}/score', [TeamApiController::class, 'updateScore']);
 

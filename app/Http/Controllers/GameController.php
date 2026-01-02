@@ -134,18 +134,29 @@ class GameController extends Controller
                 $selectedQuestions = $selectedQuestions->merge($selected);
             }
 
+            // Obtener IDs de preguntas ya asociadas a esta partida
+            $existingQuestionIds = $game->gameQuestions()->pluck('question_id')->toArray();
+
             // Asignar preguntas únicas al tablero
             $usedQuestionIds = [];
             foreach ($selectedQuestions as $question) {
-                // Evitar duplicados
+                // Evitar duplicados en la misma asignación
                 if (in_array($question->id, $usedQuestionIds)) {
                     continue;
                 }
 
-                $game->gameQuestions()->create([
-                    'question_id' => $question->id,
-                    'used' => false,
-                ]);
+                // Si la pregunta ya existe, solo actualizar su estado
+                if (in_array($question->id, $existingQuestionIds)) {
+                    $game->gameQuestions()
+                        ->where('question_id', $question->id)
+                        ->update(['used' => false]);
+                } else {
+                    // Si es nueva, crear la relación
+                    $game->gameQuestions()->create([
+                        'question_id' => $question->id,
+                        'used' => false,
+                    ]);
+                }
 
                 $usedQuestionIds[] = $question->id;
             }
@@ -246,38 +257,6 @@ class GameController extends Controller
     }
 
     /**
-     * Reiniciar una partida para jugar nuevamente
-     */
-    public function restart(Game $game)
-    {
-        if ($game->status !== 'en_curso' && $game->status !== 'finalizada') {
-            return back()->with('error', 'Solo se pueden reiniciar partidas en curso o finalizadas.');
-        }
-
-        DB::transaction(function () use ($game) {
-            // Marcar todas las preguntas como no usadas (mantener las preguntas)
-            $game->gameQuestions()->update(['used' => false]);
-
-            // Eliminar todos los equipos
-            $game->teams()->delete();
-
-            // Eliminar todos los turnos registrados
-            \App\Models\Turn::where('game_id', $game->id)->delete();
-
-            // Reiniciar estado de la partida
-            $game->update([
-                'status' => 'preparacion',
-                'is_published' => false,
-                'current_turn_team_id' => null,
-                'started_at' => null,
-                'ended_at' => null,
-            ]);
-        });
-
-        return back()->with('success', 'Partida reiniciada exitosamente. Las preguntas se mantienen, pero debes registrar nuevos equipos.');
-    }
-
-    /**
      * Remove a team from the game.
      */
     public function destroyTeam(Game $game, Team $team)
@@ -304,9 +283,21 @@ class GameController extends Controller
             return back()->with('error', 'No se puede eliminar una partida en curso.');
         }
 
-        $game->delete();
+        DB::transaction(function () use ($game) {
+            // Eliminar turnos relacionados
+            \App\Models\Turn::where('game_id', $game->id)->delete();
+
+            // Eliminar preguntas de la partida
+            $game->gameQuestions()->delete();
+
+            // Eliminar equipos
+            $game->teams()->delete();
+
+            // Eliminar la partida
+            $game->delete();
+        });
 
         return redirect()->route('games.index')
-            ->with('success', 'Partida eliminada exitosamente.');
+            ->with('success', 'Partida y todos sus registros han sido eliminados exitosamente.');
     }
 }

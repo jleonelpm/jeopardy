@@ -87,4 +87,29 @@ class GameApiController extends Controller
             'data' => $gameQuestion
         ]);
     }
+
+    /**
+     * Finalizar partida
+     */
+    public function finish(Game $game)
+    {
+        // Verificar que la partida esté en curso
+        if ($game->status !== 'en_curso') {
+            return response()->json([
+                'success' => false,
+                'message' => 'La partida no está en curso.'
+            ], 400);
+        }
+
+        $game->update([
+            'status' => 'finalizada',
+            'ended_at' => now()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Partida finalizada exitosamente.',
+            'data' => $game
+        ]);
+    }
 }

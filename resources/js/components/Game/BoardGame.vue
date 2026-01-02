@@ -108,6 +108,36 @@ export default {
         const currentTeam = ref(null);
         const selectedQuestion = ref(null);
         const gameFinished = ref(false);
+        let isCheckingGameFinish = false;
+
+        const finishGameIfComplete = async () => {
+            // Prevenir múltiples llamadas concurrentes
+            if (isCheckingGameFinish || gameFinished.value) {
+                return;
+            }
+
+            isCheckingGameFinish = true;
+
+            try {
+                const finishResponse = await fetch(`/api/games/${props.gameId}/finish`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const finishData = await finishResponse.json();
+                console.log('Game finish response:', finishData);
+
+                if (finishData.success) {
+                    gameFinished.value = true;
+                }
+            } catch (error) {
+                console.error('Error finishing game:', error);
+            } finally {
+                isCheckingGameFinish = false;
+            }
+        };
 
         const loadGameBoard = async () => {
             try {
@@ -126,11 +156,14 @@ export default {
                         return sum + cat.questions.filter(q => q.used).length;
                     }, 0);
 
-                    if (totalQuestions > 0 && usedQuestions === totalQuestions) {
-                        // Finalizar el juego después de un pequeño delay
-                        setTimeout(() => {
-                            gameFinished.value = true;
-                        }, 500);
+                    console.log(`Total: ${totalQuestions}, Used: ${usedQuestions}, GameFinished: ${gameFinished.value}`);
+
+                    if (totalQuestions > 0 && usedQuestions === totalQuestions && !gameFinished.value) {
+                        console.log('All questions answered, finalizing game...');
+                        // Esperar un poco antes de finalizar
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        // Llamar a la función para finalizar
+                        await finishGameIfComplete();
                     }
                 }
             } catch (error) {
