@@ -1,52 +1,250 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# 🎮 Jeopardy - Plataforma de Juegos Educativos
 
-## About Laravel
+Una plataforma interactiva para crear y jugar Jeopardy con Tailwind CSS, Vue 3 y Filament Admin Panel.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📋 Stack Tecnológico
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Backend
+- **Laravel 12** - Framework PHP moderno
+- **Filament 4.4** - Admin panel profesional
+- **MySQL** - Base de datos relacional
+- **PHP 8.4** - Lenguaje backend
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Frontend
+- **Vue 3** - Framework JavaScript reactivo
+- **Tailwind CSS** - Utilidades CSS modernas
+- **Vite 7.3** - Bundler rápido
+- **Livewire 3** - Componentes interactivos
 
-## Learning Laravel
+### Admin Panel
+- **Filament** - Admin panel basado en Livewire
+- **Componentes Rich** - Tablas, formularios, acciones
+- **Validación integrada** - Server-side y client-side
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Características Principales
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Juego Interactivo
+- 🎯 Tablero dinámico con categorías y preguntas
+- ⏱️ Temporizador circular con estados visuales
+- 🎨 Interfaz responsiva y animada
+- 🔊 Efectos de sonido (MP3) para respuestas
 
-## Laravel Sponsors
+### Panel Administrativo (Filament)
+- 📚 Gestión de categorías y preguntas
+- 🎮 Gestión de partidas y equipos
+- 🔍 Búsqueda y filtrado avanzado
+- 📊 Tablas con paginación y ordenamiento
+- ✅ Validaciones automáticas en formularios
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Gestión de Datos
+- 👥 Múltiples equipos por partida
+- 📈 Sistema de puntuación en tiempo real
+- 🔄 Rotación automática de turnos
+- 📱 Datos responsivos para todas las pantallas
 
-### Premium Partners
+## 📁 Estructura del Proyecto
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```
+jeopardy/
+├── app/
+│   ├── Models/              # Modelos Eloquent
+│   ├── Http/
+│   │   ├── Controllers/     # Controladores
+│   │   └── Api/            # Rutas API
+│   └── Filament/
+│       └── Resources/       # Recursos admin
+├── resources/
+│   ├── js/
+│   │   └── components/      # Componentes Vue
+│   └── css/
+├── routes/
+│   ├── api.php             # Rutas API
+│   └── web.php             # Rutas web
+├── database/
+│   ├── migrations/         # Migraciones
+│   └── seeders/           # Seeders
+└── public/
+    └── sounds/            # Archivos MP3
+```
 
-## Contributing
+## 🎨 Panel Administrativo - Filament
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Acceso
+```
+URL: http://localhost:8000/admin
+Usuario: Credenciales de autenticación
+```
 
-## Code of Conduct
+### Recursos Disponibles
+
+#### 1. Categorías
+- Crear, editar y eliminar categorías
+- Validación de nombre único
+- Descripción opcional
+- Contador de preguntas por categoría
+
+#### 2. Preguntas  
+- Gestión completa de preguntas
+- Asociación a categorías
+- Validación de puntos (100-1000)
+- Control de tiempo límite (10-300s)
+- Búsqueda y filtrado avanzado
+
+#### 3. Partidas
+- Estados: Preparación, En curso, Finalizada
+- Control de publicación
+- Gestión de número de filas
+- Relación con equipos y turnos
+- Filtros por estado y publicación
+
+#### 4. Equipos
+- Nombre y color distintivo
+- Relación con partida
+- Puntuación actualizada
+- Ordenamiento por puntuación
+
+## 📊 Modelos de Datos
+
+### Relaciones
+```
+User (1) ─── (M) Game
+Game (1) ─── (M) Team
+Game (1) ─── (M) Turn
+Game (M) ─── (M) Question (via GameQuestion)
+Category (1) ─── (M) Question
+Team (1) ─── (M) Turn
+```
+
+### GameQuestion Pivot
+- Almacena si una pregunta ha sido usada
+- Gestiona el estado de preguntas en partida
+
+## 💾 Base de Datos
+
+### Tablas Principales
+- `users` - Moderadores
+- `categories` - Categorías de preguntas
+- `questions` - Base de preguntas
+- `games` - Partidas
+- `teams` - Equipos
+- `turns` - Registro de turnos
+- `game_questions` - Relación pregunta-partida
+
+## 🔧 Instalación y Configuración
+
+### Requisitos
+- PHP 8.2+
+- Composer
+- Node.js 18+
+- MySQL 8.0+
+- Extensiones: intl, zip
+
+### Instalación Rápida
+```bash
+composer install
+npm install
+php artisan migrate
+npm run build
+php artisan serve
+```
+
+### Variables de Entorno
+```env
+DB_DATABASE=jeopardy
+DB_USERNAME=root
+DB_PASSWORD=
+FILAMENT_PANEL_ID=admin
+```
+
+## 🎮 Uso del Juego
+
+### Para Moderadores
+1. Accede a `/admin`
+2. Crea categorías y preguntas
+3. Crea una partida y añade equipos
+4. Publica la partida
+5. Accede a `/play` para moderar
+
+### Para Jugadores
+1. Navega a `/play`
+2. Selecciona la partida
+3. Espera tu turno
+4. Responde las preguntas
+5. Gana puntos según respuestas
+
+## 📱 Responsividad
+
+Todas las interfaces son completamente responsivas:
+- **Mobile**: Pantalla completa con scroll
+- **Tablet**: Adapta contenido
+- **Desktop**: Vista optimizada
+
+Breakpoints: `sm:` (640px), `md:` (768px), `lg:` (1024px), `xl:` (1280px)
+
+## 🔐 Seguridad
+
+- Autenticación con Laravel Breeze
+- Protección CSRF automática
+- Rate limiting en API
+- Validación server-side obligatoria
+- Middleware `auth` en rutas protegidas
+
+## 📖 Documentación Adicional
+
+- [FILAMENT_SETUP.md](./FILAMENT_SETUP.md) - Configuración de Filament
+- [FILAMENT_USAGE_GUIDE.md](./FILAMENT_USAGE_GUIDE.md) - Guía de uso del panel
+
+## 🐛 Debugging
+
+```bash
+# Logs del servidor
+php artisan pail --timeout=0
+
+# Modo debug en .env
+APP_DEBUG=true
+
+# Caché limpio
+php artisan cache:clear
+php artisan config:clear
+```
+
+## 📝 Notas
+
+- Los sonidos MP3 se cargan desde `/public/sounds/`
+- Los activos Filament están en `/public/js/filament/` y `/public/css/filament/`
+- El frontend usa Vite para desarrollo rápido
+- La API REST proporciona endpoints para el juego
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+1. Fork el proyecto
+2. Crea una rama para tu feature
+3. Commit tus cambios
+4. Push a la rama
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+MIT - Libre para usar en proyectos personales y comerciales
+
+## 👨‍💻 Desarrollo
+
+Rama actual: `feature/mejora-ui-backend`
+
+Cambios recientes:
+- ✅ Implementación de Filament 4.4
+- ✅ Recursos CRUD completos
+- ✅ Validaciones mejoradas
+- ✅ Tablas con búsqueda y filtrado
+- ✅ Modal responsiva fullscreen (Preguntas)
+- ✅ Sonidos en MP3
+
+---
+
+**Última actualización**: Enero 2026
 
 In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 

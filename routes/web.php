@@ -24,12 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Rutas de recursos para gestión de contenido
-    Route::resource('categories', CategoryController::class);
-    Route::resource('questions', QuestionController::class);
-
-    // Rutas de recursos para gestión de partidas
-    Route::resource('games', GameController::class)->except(['edit', 'update']);
+    // Rutas API para el frontend del juego (no duplicadas con Filament)
     Route::post('games/{game}/teams', [GameController::class, 'storeTeam'])->name('games.teams.store');
     Route::delete('games/{game}/teams/{team}', [GameController::class, 'destroyTeam'])->name('games.teams.destroy');
     Route::post('games/{game}/start', [GameController::class, 'start'])->name('games.start');
