@@ -36,7 +36,6 @@ Route::middleware('auth')->group(function () {
     Route::get('games/{game}/preview', [GameController::class, 'preview'])->name('games.preview');
     Route::post('games/{game}/publish', [GameController::class, 'publish'])->name('games.publish');
     Route::post('games/{game}/unpublish', [GameController::class, 'unpublish'])->name('games.unpublish');
-    Route::post('games/{game}/restart', [GameController::class, 'restart'])->name('games.restart');
 });
 
 require __DIR__.'/auth.php';

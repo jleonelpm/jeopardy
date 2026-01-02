@@ -105,7 +105,8 @@
                                             <form action="{{ route('games.destroy', $game) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Estás seguro de eliminar esta partida?')">
+                                                <button type="submit" class="text-red-600 hover:text-red-900 font-semibold"
+                                                    onclick="return confirm('⚠️ ¿Estás seguro de eliminar la partida #{{ $game->id }}?\n\nSe eliminarán:\n• Todos los equipos\n• Todas las preguntas de la partida\n• Todos los registros de turnos\n\nEsta acción no se puede deshacer.')">
                                                     Eliminar
                                                 </button>
                                             </form>

@@ -156,22 +156,7 @@
                                         ✓ Publicada
                                     </span>
                                 @endif
-
-                                <form action="{{ route('games.restart', $game) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-                                        onclick="return confirm('¿Deseas reiniciar esta partida? Se perderán todos los puntajes y preguntas usadas.')">
-                                        Reiniciar Partida
-                                    </button>
-                                </form>
                             @else
-                                <form action="{{ route('games.restart', $game) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-                                        onclick="return confirm('¿Deseas reiniciar esta partida? Se perderán todos los puntajes y preguntas usadas.')">
-                                        Reiniciar Partida
-                                    </button>
-                                </form>
                             @endif
                         </div>
                     </div>
